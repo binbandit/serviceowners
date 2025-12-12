@@ -1,6 +1,6 @@
 # ServiceOwners
-
-# ServiceOwners
+![Service Owners Logo](logo.png)
+![Service Owners Architecture](architecture.png)
 ![Service Owners Architecture](architecture.png)
 
 **ServiceOwners** is a tiny, repo-native ownership layer for platform teams:
