@@ -1,5 +1,8 @@
 # ServiceOwners
 
+# ServiceOwners
+![Service Owners Architecture](architecture.png)
+
 **ServiceOwners** is a tiny, repo-native ownership layer for platform teams:
 
 - A `SERVICEOWNERS` file maps **paths → services**
