@@ -1,5 +1,5 @@
 name: "ServiceOwners"
-description: "Repo-native service ownership mapping + PR impact summary (Rust)"
+description: "Repo-native service ownership mapping + PR impact summary"
 author: "binbandit"
 branding:
   icon: "map"
