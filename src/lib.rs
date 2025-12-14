@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use globset::{Glob, GlobBuilder, GlobSet, GlobSetBuilder};
+use globset::{GlobBuilder, GlobSet, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
@@ -114,7 +114,7 @@ impl ServiceMapper {
             .map(|idx| self.service_names[*idx].as_str())
     }
 
-    pub fn explain_service(&self, path: &str) -> Vec<ExplainMatch> {
+    pub fn explain_service(&self, path: &str) -> Vec<ExplainMatch<'_>> {
         let matches = self.glob_set.matches(path);
         let mut result = Vec::new();
         for idx in matches {
