@@ -1,11 +1,22 @@
+# Rust
+/target
+Cargo.lock
+
+# Python (legacy cleanup)
 __pycache__/
-*.pyc
-*.pyo
-*.egg-info/
-dist/
-build/
+*.py[cod]
+*$py.class
 .venv/
-.env
 .pytest_cache/
 .coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+.mypy_cache/
+
+# IDE
+.vscode
+.idea
+*.swp
 .DS_Store

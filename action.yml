@@ -1,13 +1,13 @@
 name: "ServiceOwners"
-description: "Repo-native service ownership mapping + PR impact summary (SERVICEOWNERS)"
+description: "Repo-native service ownership mapping + PR impact summary (Rust)"
 author: "binbandit"
 branding:
   icon: "map"
-  color: "blue"
+  color: "orange"
 
 inputs:
   token:
-    description: "GitHub token for commenting on PRs (defaults to github.token)"
+    description: "GitHub token"
     required: false
     default: ""
   serviceowners_file:
@@ -15,11 +15,11 @@ inputs:
     required: false
     default: "SERVICEOWNERS"
   services_file:
-    description: "Path to services.yaml file (optional)"
+    description: "Path to services.yaml file"
     required: false
     default: "services.yaml"
   diff:
-    description: "Override diff range (otherwise derived from GitHub event)"
+    description: "Override diff range"
     required: false
     default: ""
   comment:
@@ -31,39 +31,44 @@ inputs:
     required: false
     default: "true"
   strict_lint:
-    description: "true/false - treat lint warnings as errors"
+    description: "true/false - strict lint"
     required: false
     default: "false"
 
 runs:
   using: "composite"
   steps:
-    - name: Setup Python
-      uses: actions/setup-python@v5
+    - name: Cache Rust Build
+      uses: actions/cache@v3
       with:
-        python-version: "3.11"
+        path: |
+          ~/.cargo/bin/sowners
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-sowners-v2-${{ hashFiles('**/Cargo.lock') }}
 
     - name: Install ServiceOwners
       shell: bash
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install "${{ github.action_path }}"
+        if ! command -v sowners &> /dev/null; then
+          echo "Building ServiceOwners from source..."
+          cargo install --path "${{ github.action_path }}"
+        fi
 
     - name: Run ServiceOwners
       shell: bash
       env:
-        # If inputs.token is empty, this falls back to the workflow token automatically.
         GITHUB_TOKEN: ${{ inputs.token || github.token }}
       run: |
-        EXTRA_DIFF=""
+        DIFF_ARG=""
         if [ -n "${{ inputs.diff }}" ]; then
-          EXTRA_DIFF="--diff ${{ inputs.diff }}"
+          DIFF_ARG="--diff ${{ inputs.diff }}"
         fi
 
         sowners action \
           --serviceowners-file "${{ inputs.serviceowners_file }}" \
-          --services-file "${{ inputs.services_file }}" \
-          $EXTRA_DIFF \
+          $DIFF_ARG \
           --comment "${{ inputs.comment }}" \
           --fail-on-unmapped "${{ inputs.fail_on_unmapped }}" \
           --strict-lint "${{ inputs.strict_lint }}"
